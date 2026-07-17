@@ -10,10 +10,27 @@ No credentials, tokens, or MCP server configs are included. You'll add your own.
 - `CLAUDE.md` — universal rules (before/while coding, done=verified) + skill triggers.
 - `settings.json` — enabled plugins, marketplaces, effort level. No hooks, no
   statusLine, no model override — those tend to be machine-specific.
-- `skills/graphify`, `skills/pr-summary` — vendored copies (no upstream repo to
-  point at).
+- `skills/graphify`, `skills/pr-summary` — vendored copies.
 - `external-skills.json` — skills installed by cloning their own repo:
   `n2i-dev-cycle`, `stop-slop`, `glab`.
+
+## Skills, and who to thank for them
+
+None of these are ours except `n2i-dev-cycle`. Full credit to their authors —
+go star their repos if you find them useful.
+
+- **[graphify](https://github.com/safishamsi/graphify)** — turns a folder of
+  code/docs/whatever into a browsable knowledge graph. Wraps the `graphifyy`
+  PyPI package. By [Graphify-Labs](https://github.com/Graphify-Labs).
+- **[stop-slop](https://github.com/hardikpandya/stop-slop)** — strips AI writing
+  tics out of prose before it ships. By [Hardik Pandya](https://hvpandya.com).
+- **[glab](https://github.com/henricook/claude-glab-skill)** — GitLab CLI
+  guidance for issues/MRs/pipelines. By [henricook](https://github.com/henricook).
+- **pr-summary** — small in-house helper for summarizing a PR/MR diff for a
+  reviewer. No separate upstream; vendored as-is.
+- **[n2i-dev-cycle](https://github.com/muneebrbaig/n2i-dev-cycle)** — the
+  ticket-to-shipped-code workflow this kit's author uses day to day. Ours, and
+  the one you'll actually lean on for the projects we work on together.
 
 ## Setup — two ways
 
