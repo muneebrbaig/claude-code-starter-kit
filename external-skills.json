@@ -1,0 +1,17 @@
+[
+  {
+    "name": "n2i-dev-cycle",
+    "repo": "https://github.com/muneebrbaig/n2i-dev-cycle.git",
+    "note": "Ticket-to-shipped-code workflow for N2I projects. Has its own .env — copy .n2i-dev-cycle.env.example and fill in your own values after cloning."
+  },
+  {
+    "name": "stop-slop",
+    "repo": "https://github.com/hardikpandya/stop-slop.git",
+    "note": "Third-party skill, not ours. Strips AI writing patterns from prose."
+  },
+  {
+    "name": "glab",
+    "repo": "https://github.com/henricook/claude-glab-skill.git",
+    "note": "Third-party skill, not ours. GitLab CLI guidance."
+  }
+]

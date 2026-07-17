@@ -1,0 +1,38 @@
+{
+  "effortLevel": "medium",
+  "enabledPlugins": {
+    "caveman@caveman": true,
+    "claude-mem@thedotmack": true,
+    "commit-commands@claude-plugins-official": true,
+    "feature-dev@claude-plugins-official": true,
+    "gitlab@claude-plugins-official": true,
+    "impeccable@impeccable": true,
+    "understand-anything@understand-anything": true
+  },
+  "env": {
+    "CLAUDE_CODE_DISABLE_AUTO_MEMORY": "1"
+  },
+  "extraKnownMarketplaces": {
+    "caveman": {
+      "source": {
+        "repo": "JuliusBrussee/caveman",
+        "source": "github"
+      }
+    },
+    "impeccable": {
+      "source": {
+        "repo": "pbakaus/impeccable",
+        "source": "github"
+      }
+    },
+    "understand-anything": {
+      "source": {
+        "repo": "Egonex-AI/Understand-Anything",
+        "source": "github"
+      }
+    }
+  },
+  "permissions": {
+    "allow": []
+  }
+}
