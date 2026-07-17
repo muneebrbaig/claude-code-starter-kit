@@ -26,6 +26,20 @@ fi
 
 mkdir -p "$CLAUDE_DIR/skills" "$SKILLS_SRC_DIR"
 
+# Real symlinks need Developer Mode or elevation on Windows; a directory
+# junction doesn't. Only matters if this script runs under git-bash/MSYS.
+link_skill() {
+  local src="$1" dst="$2"
+  case "$(uname -s)" in
+    MINGW*|MSYS*|CYGWIN*)
+      cmd.exe /c mklink /J "$(cygpath -w "$dst")" "$(cygpath -w "$src")" >/dev/null
+      ;;
+    *)
+      ln -s "$src" "$dst"
+      ;;
+  esac
+}
+
 copy_with_confirm() {
   local src="$1" dst="$2"
   if [ -e "$dst" ]; then
@@ -63,8 +77,8 @@ while IFS=$'\t' read -r name repo note; do
     git clone "$repo" "$src_dir"
   fi
   if [ ! -e "$link_dst" ]; then
-    ln -s "$src_dir" "$link_dst"
-    echo "Symlinked $name"
+    link_skill "$src_dir" "$link_dst"
+    echo "Linked $name"
   fi
   echo "Note: $note"
 done < <(python3 - "$KIT_DIR/external-skills.json" <<'PY'
@@ -76,4 +90,4 @@ PY
 )
 
 echo "Done. Restart Claude Code to pick up the new skills/settings."
-echo "Optional: rtk (Rust Token Killer) — see README for adding it back to CLAUDE.md."
+echo "Optional: rtk/gh/glab CLIs — see SETUP.md step 5 or README for install commands."

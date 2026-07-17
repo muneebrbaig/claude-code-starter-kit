@@ -37,8 +37,12 @@ don't clobber their existing config silently.
 - For each entry:
   - Ensure `~/projects/skills/` exists.
   - If `~/projects/skills/<name>` doesn't already exist, `git clone <repo>` into it.
-  - Symlink: `ln -s ~/projects/skills/<name> ~/.claude/skills/<name>` (skip if the
-    symlink/dir already exists).
+  - Link it (skip if the link/dir already exists):
+    - macOS/Linux: `ln -s ~/projects/skills/<name> ~/.claude/skills/<name>`
+    - Windows: real symlinks need Developer Mode or an elevated shell — use a
+      directory junction instead (works unelevated):
+      `mklink /J "%USERPROFILE%\.claude\skills\<name>" "%USERPROFILE%\projects\skills\<name>"`
+      or in PowerShell: `New-Item -ItemType Junction -Path "$env:USERPROFILE\.claude\skills\<name>" -Target "$env:USERPROFILE\projects\skills\<name>"`
   - Print the entry's `note` to the human — some (like `n2i-dev-cycle`) have their
     own `.env.example` that needs filling in with the human's own values. Do not
     fill in credentials yourself — tell the human to do it.
@@ -65,11 +69,40 @@ Skip a key entirely if they have no preference — don't invent a value.
 
 Confirm the written file back to the human before moving on.
 
-## 5. Optional: rtk (Rust Token Killer)
-- Don't install this automatically. It's a separate CLI tool the original author
-  uses. If the human wants it, tell them to check with the person who gave them
-  this kit for install instructions, then uncomment the `@RTK.md` line at the top
-  of their `~/.claude/CLAUDE.md`.
+## 5. Optional: rtk, gh, glab CLIs
+These aren't required to use the kit, but ask the human if they want them — the
+`pr-summary`/`glab` skills shell out to `gh`/`glab`, and `rtk` cuts token usage on
+routine dev commands via a Claude Code hook. Don't install anything without asking
+first; these are system-level installs, not repo files.
+
+**Check before installing.** Run `gh --version` / `glab --version` / `rtk --version`
+first (already covered for gh/glab in step 0). If a tool is already present, skip
+straight to the "Then:" auth/init line for it — do not reinstall, upgrade, or run
+its installer over an existing install. An existing install may be pinned to a
+version, managed by a different package manager, or hold config/auth you'd disturb;
+reinstalling isn't yours to decide, only the human's.
+
+- **gh** (GitHub CLI):
+  - macOS: `brew install gh`
+  - Linux: distro-specific, see https://github.com/cli/cli/blob/trunk/docs/install_linux.md
+  - Windows: `winget install --id GitHub.cli`
+  - Then: `gh auth login`
+  - No separate "skill" needed — Claude Code already knows to use `gh` for GitHub work out of the box.
+- **glab** (GitLab CLI):
+  - macOS/Linux (Homebrew): `brew install glab`
+  - Linux (other): see https://gitlab.com/gitlab-org/cli/-/blob/main/docs/installation_options.md
+  - Windows: `winget install glab.glab` (or `choco install glab` / `scoop install glab`)
+  - Then: `glab auth login`
+  - The `glab` skill itself is handled in step 4 (`external-skills.json`).
+- **rtk** (Rust Token Killer, optional token-saving proxy):
+  - macOS/Linux (Homebrew): `brew install rtk-ai/tap/rtk`
+  - macOS/Linux (script): `curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh`
+  - Windows: download `rtk-x86_64-pc-windows-msvc.zip` from
+    https://github.com/rtk-ai/rtk/releases, put `rtk.exe` on `PATH`. Some rtk
+    filters also need `rg` (ripgrep) — if missing, `winget install
+    BurntSushi.ripgrep.MSVC`.
+  - Then: `rtk init --global` (wires the Claude Code hook), verify with `rtk gain`.
+  - Once installed, uncomment the `@RTK.md` line at the top of `~/.claude/CLAUDE.md`.
 
 ## 6. Wrap up
 - Tell the human to restart Claude Code (or start a new session) to pick up the
