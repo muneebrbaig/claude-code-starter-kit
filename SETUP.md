@@ -22,10 +22,13 @@ don't clobber their existing config silently.
 - Check if `~/.claude/settings.json` already exists.
   - If not: copy this repo's `settings.json` to `~/.claude/settings.json`.
   - If it exists: **do not overwrite.** Show the human this repo's `settings.json`
-    and ask them to merge the `enabledPlugins`, `extraKnownMarketplaces`, and `env`
-    keys into their existing file by hand (or with your help), since their existing
-    file likely has hooks/permissions/model overrides specific to their own machine
-    that must not be lost.
+    and ask them to merge the `enabledPlugins`, `extraKnownMarketplaces`, `env`, and
+    `hooks` keys into their existing file by hand (or with your help), since their
+    existing file likely has hooks/permissions/model overrides specific to their own
+    machine that must not be lost. For `hooks` specifically: merge by adding this
+    repo's hook entries as additional array items under the matching event/matcher
+    (e.g. `PreToolUse` → `Bash`), don't replace an existing entry for that
+    event/matcher — they may already have one doing something else.
 
 ## 3. Vendored skills (graphify, pr-summary)
 - For each of `skills/graphify`, `skills/pr-summary` in this repo:

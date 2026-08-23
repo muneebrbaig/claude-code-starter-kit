@@ -54,7 +54,18 @@ echo "== CLAUDE.md =="
 copy_with_confirm "$KIT_DIR/CLAUDE.md" "$CLAUDE_DIR/CLAUDE.md"
 
 echo "== settings.json =="
+if [ -e "$CLAUDE_DIR/settings.json" ]; then
+  echo "NOTE: this replaces the WHOLE file, not a merge. If your existing"
+  echo "$CLAUDE_DIR/settings.json has its own hooks/permissions/model overrides,"
+  echo "back them up or merge by hand instead of overwriting (see SETUP.md step 2)."
+fi
 copy_with_confirm "$KIT_DIR/settings.json" "$CLAUDE_DIR/settings.json"
+
+echo "== hooks =="
+mkdir -p "$CLAUDE_DIR/hooks"
+cp "$KIT_DIR/hooks/"*.sh "$CLAUDE_DIR/hooks/"
+chmod +x "$CLAUDE_DIR/hooks/"*.sh
+echo "Installed hooks to $CLAUDE_DIR/hooks"
 
 echo "== vendored skills (graphify, pr-summary) =="
 for skill in graphify pr-summary; do

@@ -13,5 +13,10 @@
     "name": "glab",
     "repo": "https://github.com/henricook/claude-glab-skill.git",
     "note": "Third-party skill, not ours. GitLab CLI guidance."
+  },
+  {
+    "name": "token-audit",
+    "repo": "https://github.com/muneebrbaig/token-audit-skill.git",
+    "note": "Report-only audit of memory files, MCP tools, model/effort, hooks, subagents, scheduled jobs, and cache usage for token waste. Trigger with /token-audit."
   }
 ]

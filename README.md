@@ -18,12 +18,12 @@ No credentials, tokens, or MCP server configs are included. You'll add your own.
   is by design, so you don't lose clarity exactly when it matters most.
 - `skills/graphify`, `skills/pr-summary` — vendored copies.
 - `external-skills.json` — skills installed by cloning their own repo:
-  `n2i-dev-cycle`, `stop-slop`, `glab`.
+  `n2i-dev-cycle`, `stop-slop`, `glab`, `token-audit`.
 
 ## Skills, and who to thank for them
 
-None of these are ours except `n2i-dev-cycle`. Full credit to their authors —
-go star their repos if you find them useful.
+None of these are ours except `n2i-dev-cycle` and `token-audit`. Full credit to
+their authors — go star their repos if you find them useful.
 
 - **[graphify](https://github.com/safishamsi/graphify)** — turns a folder of
   code/docs/whatever into a browsable knowledge graph. Wraps the `graphifyy`
@@ -37,6 +37,9 @@ go star their repos if you find them useful.
 - **[n2i-dev-cycle](https://github.com/muneebrbaig/n2i-dev-cycle)** — the
   ticket-to-shipped-code workflow this kit's author uses day to day. Ours, and
   the one you'll actually lean on for the projects we work on together.
+- **[token-audit](https://github.com/muneebrbaig/token-audit-skill)** —
+  report-only audit of memory files, MCP tools, model/effort, hooks,
+  subagents, scheduled jobs, and cache usage for token waste. Ours.
 - **[rtk](https://github.com/rtk-ai/rtk)** (not a skill, an optional CLI proxy —
   see "Optional CLIs" below) — cuts token usage on routine dev commands. By
   Patrick Szymkowiak and the [rtk-ai](https://github.com/rtk-ai) team.

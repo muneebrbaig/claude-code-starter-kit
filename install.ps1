@@ -41,7 +41,18 @@ Write-Host "== CLAUDE.md =="
 Copy-WithConfirm (Join-Path $KitDir "CLAUDE.md") (Join-Path $ClaudeDir "CLAUDE.md")
 
 Write-Host "== settings.json =="
+if (Test-Path (Join-Path $ClaudeDir "settings.json")) {
+    Write-Host "NOTE: this replaces the WHOLE file, not a merge. If your existing"
+    Write-Host "$ClaudeDir\settings.json has its own hooks/permissions/model overrides,"
+    Write-Host "back them up or merge by hand instead of overwriting (see SETUP.md step 2)."
+}
 Copy-WithConfirm (Join-Path $KitDir "settings.json") (Join-Path $ClaudeDir "settings.json")
+
+Write-Host "== hooks =="
+$HooksDst = Join-Path $ClaudeDir "hooks"
+New-Item -ItemType Directory -Force -Path $HooksDst | Out-Null
+Copy-Item (Join-Path $KitDir "hooks" "*.sh") $HooksDst -Force
+Write-Host "Installed hooks to $HooksDst"
 
 Write-Host "== vendored skills (graphify, pr-summary) =="
 foreach ($skill in @("graphify", "pr-summary")) {
