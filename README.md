@@ -8,8 +8,9 @@ No credentials, tokens, or MCP server configs are included. You'll add your own.
 ## What's in here
 
 - `CLAUDE.md` — universal rules (before/while coding, done=verified) + skill triggers.
-- `settings.json` — enabled plugins, marketplaces, effort level. No hooks, no
-  statusLine, no model override — those tend to be machine-specific. Note:
+- `settings.json` — enabled plugins, marketplaces, effort level, and one
+  `PreToolUse` hook (see "Hooks" below). No statusLine, no model override —
+  those tend to be machine-specific. Note:
   `caveman` is enabled by default, so Claude responds tersely out of the box —
   say "stop caveman" / "normal mode" if you don't want that. It also auto-drops
   out of terse mode on its own for security warnings, irreversible-action
@@ -19,6 +20,17 @@ No credentials, tokens, or MCP server configs are included. You'll add your own.
 - `skills/graphify`, `skills/pr-summary` — vendored copies.
 - `external-skills.json` — skills installed by cloning their own repo:
   `n2i-dev-cycle`, `stop-slop`, `glab`, `token-audit`.
+
+## Hooks
+
+`hooks/` (installed to `~/.claude/hooks/`) has one `PreToolUse`/`Bash` hook,
+wired in `settings.json`: it rewrites noisy commands (`npm install`, `pip
+install`, `cargo build`, `make`, `docker build`, `mvn`/`gradle`, `xcodebuild`,
+etc.) to pipe their output through a filter that keeps error/fail/warn lines
+plus a trailing summary, and drops the rest before it reaches context. Short
+or non-matching commands pass through untouched. If you already have a
+`PreToolUse`/`Bash` hook of your own (e.g. `rtk`), this one adds as an
+additional entry alongside it — both run, they don't replace each other.
 
 ## Skills, and who to thank for them
 
@@ -60,6 +72,12 @@ It'll ask before overwriting anything you already have.
 ```
 Windows note: skills are linked with a directory junction instead of a symlink —
 junctions work without admin rights or Developer Mode, unlike `ln -s`/`mklink /D`.
+
+**Caution:** if you already have a `~/.claude/settings.json`, both options copy
+this repo's file over yours — a full replace, not a merge. Option A asks first
+and offers to merge by hand; option B (`install.sh`/`install.ps1`) only prompts
+y/N to overwrite, so back up your existing hooks/permissions/model overrides
+before saying yes if you've customized it.
 
 ## After setup
 
