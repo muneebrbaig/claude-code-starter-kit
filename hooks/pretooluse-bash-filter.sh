@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # PreToolUse hook (matcher: Bash). Rewrites noisy commands (installs, builds,
-# test runs) to pipe through noisy-filter.sh so the output never reaches
-# context in full. Non-noisy commands pass through unmodified.
+# test runs) so their output goes through noisy-filter.sh and only a trimmed
+# version reaches context. Everything else passes through untouched.
 import json
 import re
 import shlex
@@ -13,18 +13,22 @@ if data.get("tool_name") != "Bash":
 
 cmd = data.get("tool_input", {}).get("command", "")
 
+# The command has to start a shell command (line start, or after ; & | or an
+# opening paren), so "git commit -m 'make it work'" or "grep make" don't match.
 NOISY = re.compile(
-    r"\b(npm|yarn|pnpm)\s+(install|ci|add|update|run\s+build|run\s+test)\b"
-    r"|\bpip3?\s+install\b"
-    r"|\bcargo\s+(build|test|install)\b"
-    r"|\bgo\s+(build|test|install)\b"
-    r"|\bmake\b"
-    r"|\bdocker\s+build\b"
-    r"|\b(apt|apt-get|brew)\s+install\b"
-    r"|\bbundle\s+install\b"
-    r"|\bcomposer\s+install\b"
-    r"|\b(mvn|gradle)\s+(install|test|build|package)\b"
-    r"|\bxcodebuild\b",
+    r"(?:^|[;&|(]\s*)(?:sudo\s+)?(?:"
+    r"(?:npm|yarn|pnpm)\s+(?:install|ci|add|update|run\s+build|run\s+test)\b"
+    r"|pip3?\s+install\b"
+    r"|cargo\s+(?:build|test|install)\b"
+    r"|go\s+(?:build|test|install)\b"
+    r"|make\b"
+    r"|docker\s+build\b"
+    r"|(?:apt|apt-get|brew)\s+install\b"
+    r"|bundle\s+install\b"
+    r"|composer\s+install\b"
+    r"|(?:mvn|gradle)\s+(?:install|test|build|package)\b"
+    r"|xcodebuild\b"
+    r")",
     re.IGNORECASE,
 )
 

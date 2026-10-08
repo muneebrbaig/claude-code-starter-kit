@@ -1,113 +1,113 @@
 # Setup instructions (for Claude Code, not the human)
 
-You are running inside a clone of `claude-code-starter-kit`. The human asked you to
-set it up. Follow these steps. Ask before overwriting anything that already exists —
-don't clobber their existing config silently.
+You're in a clone of `claude-code-starter-kit`, and the human asked you to set it
+up. Follow the steps below. Ask before overwriting anything that already exists.
 
 ## 0. Preflight
-- Check `git --version` and `python3 --version` both work. If either is missing,
-  stop here, tell the human what's missing and how to install it (e.g. `brew
-  install git python3` on macOS), and don't proceed with a partial setup.
+- Check that `git --version` works, and that `python3 --version` or `python --version`
+  reports Python 3. If either is missing, stop. Tell the human what's missing and how to install it (on macOS:
+  `brew install git python3`). Don't do a partial setup.
 - Check `gh --version` and `glab --version`. Neither blocks setup, but note which
-  are missing — the `pr-summary` and `glab` skills shell out to them at run time
-  (and need their own `gh auth login` / `glab auth login` before they'll work).
+  are missing. The `pr-summary` and `glab` skills call them and need
+  `gh auth login` / `glab auth login` first.
 
 ## 1. Global CLAUDE.md
-- Check if `~/.claude/CLAUDE.md` already exists.
-  - If not: copy this repo's `CLAUDE.md` to `~/.claude/CLAUDE.md`.
-  - If it exists: show the human a diff between theirs and this repo's, ask whether
-    to replace, merge, or skip.
+- If `~/.claude/CLAUDE.md` doesn't exist, copy this repo's `CLAUDE.md` there.
+- If it exists, show the human a diff and ask whether to replace, merge or skip.
 
 ## 2. settings.json
-- Check if `~/.claude/settings.json` already exists.
-  - If not: copy this repo's `settings.json` to `~/.claude/settings.json`.
-  - If it exists: **do not overwrite.** Show the human this repo's `settings.json`
-    and ask them to merge the `enabledPlugins`, `extraKnownMarketplaces`, `env`, and
-    `hooks` keys into their existing file by hand (or with your help), since their
-    existing file likely has hooks/permissions/model overrides specific to their own
-    machine that must not be lost. For `hooks` specifically: merge by adding this
-    repo's hook entries as additional array items under the matching event/matcher
-    (e.g. `PreToolUse` → `Bash`), don't replace an existing entry for that
-    event/matcher — they may already have one doing something else.
+- If `~/.claude/settings.json` doesn't exist, copy this repo's `settings.json` there.
+- If it exists, **don't overwrite it.** Show the human this repo's `settings.json`
+  and ask them to merge `enabledPlugins`, `extraKnownMarketplaces`, `env` and
+  `hooks` into their file, by hand or with your help. Their file probably holds
+  hooks, permissions or model overrides for their own machine, and those have
+  to survive. For `hooks`, add this repo's entries as extra items under the
+  matching event and matcher (`PreToolUse` → `Bash`). Don't replace an entry
+  that's already there, since it may do something else.
 
-## 3. Vendored skills (graphify, pr-summary)
-- For each of `skills/graphify`, `skills/pr-summary` in this repo:
+## 3. Hooks
+- `settings.json` points at `~/.claude/hooks/pretooluse-bash-filter.sh`. Copy
+  both files from `hooks/` into `~/.claude/hooks/`, creating the folder if
+  needed. On macOS/Linux, run `chmod +x` on them.
+- If a file with the same name is already there, ask before overwriting.
+- The hook needs Python 3 (as `python3` or `python`), `bash` and `awk` on `PATH`. On Windows that means
+  Git Bash and a real Python install.
+
+## 3.5. Vendored skills (graphify, pr-summary)
+- For each of `skills/graphify` and `skills/pr-summary`:
   - If `~/.claude/skills/<name>` doesn't exist, copy the directory there.
   - If it exists, ask before overwriting.
 
 ## 4. External skills (cloned from their own repos)
-- Read `external-skills.json` in this repo — a list of `{name, repo, note}`.
+- Read `external-skills.json` in this repo. It's a list of `{name, repo, note}`.
 - For each entry:
-  - Ensure `~/projects/skills/` exists.
-  - If `~/projects/skills/<name>` doesn't already exist, `git clone <repo>` into it.
-  - Link it (skip if the link/dir already exists):
+  - Make sure `~/projects/skills/` exists.
+  - If `~/projects/skills/<name>` doesn't exist, `git clone <repo>` into it.
+  - Link it, unless the link or directory already exists:
     - macOS/Linux: `ln -s ~/projects/skills/<name> ~/.claude/skills/<name>`
-    - Windows: real symlinks need Developer Mode or an elevated shell — use a
-      directory junction instead (works unelevated):
-      `mklink /J "%USERPROFILE%\.claude\skills\<name>" "%USERPROFILE%\projects\skills\<name>"`
-      or in PowerShell: `New-Item -ItemType Junction -Path "$env:USERPROFILE\.claude\skills\<name>" -Target "$env:USERPROFILE\projects\skills\<name>"`
-  - Print the entry's `note` to the human — some (like `n2i-dev-cycle`) have their
-    own `.env.example` that needs filling in with the human's own values. Do not
-    fill in credentials yourself — tell the human to do it.
+    - Windows (Git Bash): symlinks need Developer Mode or an elevated shell, so
+      use a directory junction instead:
+      `cmd //c mklink /J "$(cygpath -w ~/.claude/skills/<name>)" "$(cygpath -w ~/projects/skills/<name>)"`
+  - Print the entry's `note` to the human. Some skills (like `n2i-dev-cycle`) ship
+    a `.env.example` the human has to fill in. Don't fill in credentials yourself.
 
 ## 4.5. n2i-dev-cycle config (interactive)
-None of these are secrets — just preferences, and every key is optional (the skill
-falls back to sane defaults if unset). Read
-`~/projects/skills/n2i-dev-cycle/.n2i-dev-cycle.env.example` for the current field
-list, then ask the human the questions below and write their answers to
+These are preferences, not secrets, and every key is optional. The skill falls
+back to defaults for anything unset. Read
+`~/projects/skills/n2i-dev-cycle/.n2i-dev-cycle.env.example` for the current
+fields, ask the human the questions below, and write the answers to
 `~/projects/skills/n2i-dev-cycle/.n2i-dev-cycle.env` (gitignored, stays local).
-Skip a key entirely if they have no preference — don't invent a value.
+If they have no preference for a key, leave it out. Don't invent a value.
 
-- **BRANCH_PREFIX** — what prefix for new feature branches? (e.g. `mb/` →
-  `mb/17-add-foo`). Default if skipped: derived from their git `user.name`
-  initials, else `dev/`.
-- **DEFAULT_SCOPE** — when a repo has both backend and frontend, default scope for
-  new work? `backend` / `frontend` / `both` / leave unset (skill asks each time).
-- **FORGE** — force `gitlab` or `github`, or leave unset to auto-detect from the
-  git remote (recommended default — most repos won't need this set).
-- **MIGRATION_DOC** — only relevant if working on a migration-tracked repo; the
-  filename of that repo's migration status doc (e.g. `migration-status.md`). If
-  the human isn't sure, suggest checking that repo's `docs/` folder once they're
-  in it — don't guess a project-specific name here. Leave unset otherwise.
+- **BRANCH_PREFIX**: prefix for new feature branches, e.g. `mb/` gives
+  `mb/17-add-foo`. If skipped, it uses the initials from git `user.name`, else
+  `dev/`.
+- **DEFAULT_SCOPE**: where new work goes by default when a repo has both
+  backend and frontend. `backend`, `frontend`, `both`, or unset (the skill asks
+  each time).
+- **FORGE**: `gitlab` or `github`. Leave it unset to detect from the git
+  remote, which works for most repos.
+- **MIGRATION_DOC**: only for a migration-tracked repo. The filename of its
+  migration status doc, e.g. `migration-status.md`. If the human isn't sure,
+  tell them to check that repo's `docs/` folder later. Don't guess a name.
+  Otherwise leave it unset.
 
-Confirm the written file back to the human before moving on.
+Show the human the file you wrote before moving on.
 
 ## 5. Optional: rtk, gh, glab CLIs
-These aren't required to use the kit, but ask the human if they want them — the
-`pr-summary`/`glab` skills shell out to `gh`/`glab`, and `rtk` cuts token usage on
-routine dev commands via a Claude Code hook. Don't install anything without asking
-first; these are system-level installs, not repo files.
+The kit works without these. Ask the human whether they want them. `pr-summary`
+and `glab` call `gh` and `glab`, and `rtk` cuts token use on routine dev commands
+through a Claude Code hook. These are system-level installs, so don't install
+anything without asking.
 
-**Check before installing.** Run `gh --version` / `glab --version` / `rtk --version`
-first (already covered for gh/glab in step 0). If a tool is already present, skip
-straight to the "Then:" auth/init line for it — do not reinstall, upgrade, or run
-its installer over an existing install. An existing install may be pinned to a
-version, managed by a different package manager, or hold config/auth you'd disturb;
-reinstalling isn't yours to decide, only the human's.
+**Check first.** Run `gh --version`, `glab --version` and `rtk --version` (step 0
+already covered gh and glab). If a tool is installed, skip to its "Then:" line.
+Don't reinstall, upgrade or run an installer over it. It may be pinned to a
+version, managed by another package manager, or hold config and auth you'd
+disturb. Only the human decides that.
 
 - **gh** (GitHub CLI):
   - macOS: `brew install gh`
   - Linux: distro-specific, see https://github.com/cli/cli/blob/trunk/docs/install_linux.md
   - Windows: `winget install --id GitHub.cli`
   - Then: `gh auth login`
-  - No separate "skill" needed — Claude Code already knows to use `gh` for GitHub work out of the box.
+  - No skill needed. Claude Code already knows `gh`.
 - **glab** (GitLab CLI):
   - macOS/Linux (Homebrew): `brew install glab`
   - Linux (other): see https://gitlab.com/gitlab-org/cli/-/blob/main/docs/installation_options.md
   - Windows: `winget install glab.glab` (or `choco install glab` / `scoop install glab`)
   - Then: `glab auth login`
-  - The `glab` skill itself is handled in step 4 (`external-skills.json`).
-- **rtk** (Rust Token Killer, optional token-saving proxy):
+  - The `glab` skill comes from step 4 (`external-skills.json`).
+- **rtk** (Rust Token Killer, an optional token-saving proxy):
   - macOS/Linux (Homebrew): `brew install rtk-ai/tap/rtk`
   - macOS/Linux (script): `curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh`
   - Windows: download `rtk-x86_64-pc-windows-msvc.zip` from
-    https://github.com/rtk-ai/rtk/releases, put `rtk.exe` on `PATH`. Some rtk
-    filters also need `rg` (ripgrep) — if missing, `winget install
-    BurntSushi.ripgrep.MSVC`.
-  - Then: `rtk init --global` (wires the Claude Code hook), verify with `rtk gain`.
-  - Once installed, uncomment the `@RTK.md` line at the top of `~/.claude/CLAUDE.md`.
+    https://github.com/rtk-ai/rtk/releases and put `rtk.exe` on `PATH`. Some rtk
+    filters also need `rg` (ripgrep): `winget install BurntSushi.ripgrep.MSVC`.
+  - Then: `rtk init --global` (adds the Claude Code hook). Check it with `rtk gain`.
+  - Once it's installed, uncomment the `@RTK.md` line at the top of `~/.claude/CLAUDE.md`.
 
 ## 6. Wrap up
-- Tell the human to restart Claude Code (or start a new session) to pick up the
-  new skills/plugins.
-- Do not run `git add`/`commit`/`push` anywhere as part of this setup.
+- Tell the human to restart Claude Code, or start a new session, so it picks up
+  the new skills and plugins.
+- Don't run `git add`, `commit` or `push` as part of this setup.

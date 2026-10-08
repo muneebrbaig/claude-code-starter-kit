@@ -19,7 +19,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 $HOME/.claude/hooks/pretooluse-bash-filter.sh"
+            "command": "for p in python3 python; do \"$p\" -c 'import sys; sys.exit(sys.version_info < (3,))' 2>/dev/null && exec \"$p\" \"$HOME/.claude/hooks/pretooluse-bash-filter.sh\"; done"
           }
         ]
       }
@@ -29,6 +29,12 @@
     "caveman": {
       "source": {
         "repo": "JuliusBrussee/caveman",
+        "source": "github"
+      }
+    },
+    "thedotmack": {
+      "source": {
+        "repo": "thedotmack/claude-mem",
         "source": "github"
       }
     },

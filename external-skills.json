@@ -2,21 +2,21 @@
   {
     "name": "n2i-dev-cycle",
     "repo": "https://github.com/muneebrbaig/n2i-dev-cycle.git",
-    "note": "Ticket-to-shipped-code workflow for N2I projects. Has its own .env — copy .n2i-dev-cycle.env.example and fill in your own values after cloning."
+    "note": "Ticket-to-shipped-code workflow, stack-agnostic. Copy .n2i-dev-cycle.env.example to .n2i-dev-cycle.env after cloning and fill in your own values."
   },
   {
     "name": "stop-slop",
     "repo": "https://github.com/hardikpandya/stop-slop.git",
-    "note": "Third-party skill, not ours. Strips AI writing patterns from prose."
+    "note": "Third-party skill. Strips AI writing patterns from prose."
   },
   {
     "name": "glab",
     "repo": "https://github.com/henricook/claude-glab-skill.git",
-    "note": "Third-party skill, not ours. GitLab CLI guidance."
+    "note": "Third-party skill. GitLab CLI guidance."
   },
   {
     "name": "token-audit",
     "repo": "https://github.com/muneebrbaig/token-audit-skill.git",
-    "note": "Report-only audit of memory files, MCP tools, model/effort, hooks, subagents, scheduled jobs, and cache usage for token waste. Trigger with /token-audit."
+    "note": "Read-only audit of memory files, MCP tools, model and effort, hooks, subagents, scheduled jobs and cache usage for token waste. Run it with /token-audit."
   }
 ]

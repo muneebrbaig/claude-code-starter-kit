@@ -1,21 +1,20 @@
-# Optional: rtk (Rust Token Killer) — token-optimized CLI proxy
-# Install separately (see README "Optional: rtk"), then uncomment:
+# Optional: rtk (Rust Token Killer), a token-saving CLI proxy.
+# Install it separately (README, "Optional CLIs"), then uncomment:
 # @RTK.md
 
 # Skills
-- **graphify** (`~/.claude/skills/graphify/SKILL.md`) — any input to knowledge graph. Trigger: `/graphify`. When the user types `/graphify`, invoke the Skill tool with `skill: "graphify"` before doing anything else.
-- **stop-slop** (`~/.claude/skills/stop-slop/SKILL.md`) — remove AI writing patterns from prose. Auto-invoke: apply stop-slop rules (no need to call skill tool) when writing commit messages, PR/MR descriptions, tickets, wiki pages, code comments, documentation, or any user-facing prose. Explicit trigger: `/stop-slop` for reviewing/rewriting existing text.
+- **graphify** (`~/.claude/skills/graphify/SKILL.md`): turns any input into a knowledge graph. Trigger: `/graphify`. When the user types `/graphify`, invoke the Skill tool with `skill: "graphify"` before anything else.
+- **stop-slop** (`~/.claude/skills/stop-slop/SKILL.md`): removes AI writing patterns from prose. Apply its rules without calling the skill tool whenever you write commit messages, PR/MR descriptions, tickets, wiki pages, code comments, documentation or other user-facing prose. `/stop-slop` reviews and rewrites existing text.
 
 ## Skill Installation Workflow
-When installing a skill that requires a local clone (GitHub or other hosted repo):
+When a skill needs a local clone (GitHub or another host):
 1. Clone into `~/projects/skills/<skill-name>`
 2. Link into `~/.claude/skills/<skill-name>`:
    - macOS/Linux: `ln -s ~/projects/skills/<skill-name> ~/.claude/skills/<skill-name>`
-   - Windows: symlinks need Developer Mode or an elevated shell — use a directory
-     junction instead, no elevation needed:
-     `mklink /J "%USERPROFILE%\.claude\skills\<skill-name>" "%USERPROFILE%\projects\skills\<skill-name>"`
-     (PowerShell: `New-Item -ItemType Junction -Path "$env:USERPROFILE\.claude\skills\<skill-name>" -Target "$env:USERPROFILE\projects\skills\<skill-name>"`)
-All skill source stays centralized in the skills folder; the link makes it available to Claude Code.
+   - Windows (Git Bash): symlinks need Developer Mode or an elevated shell. Use a
+     directory junction instead:
+     `cmd //c mklink /J "$(cygpath -w ~/.claude/skills/<skill-name>)" "$(cygpath -w ~/projects/skills/<skill-name>)"`
+All skill source stays in the skills folder. The link makes it visible to Claude Code.
 
 # Universal Rules (all projects)
 - DO NOT COMMIT. User commits manually. Never run `git add/commit/push` unless explicitly asked.

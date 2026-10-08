@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-# Streams a command's stdout/stderr: prints error/fail/warn lines immediately,
-# then a trailing summary of the last N lines plus a count of what was dropped.
+# Reads a command's output on stdin. Prints error/fail/warn lines as they
+# arrive, then the last N lines and a count of how many earlier lines were dropped.
 set -euo pipefail
 
 awk -v n=20 '
 {
   total++
   buf[((total - 1) % n) + 1] = $0
-  if (tolower($0) ~ /error|fail|fatal|panic|denied|exception|traceback/) {
+  if (tolower($0) ~ /error|fail|fatal|panic|denied|exception|traceback|warn/) {
     print
   }
 }
